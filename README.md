@@ -9,4 +9,4 @@ Instalação:
 
  Dependências:
  - Chance.js que é utilizado para gerar os dados aleatórios. (https://chancejs.com/)
- - CsvWriter que é utilizado para escrever os dados em .csv.
+ - CsvWriter que é utilizado para escrever os dados em .csv. (https://www.npmjs.com/package/csv-writer)
