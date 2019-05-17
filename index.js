@@ -6,6 +6,9 @@ const racas = ['Vira-lata', 'Shih-Tzu', 'Yorkshire', 'Poodle', 'Lhasa Apso', 'Bu
     'Dachshund', 'Pinscher', 'Schnauzer', 'Spitz Alemão', 'Beagle', 'Border Collie', 'Buldogue Inglês', 'Cocker Spaniel', 'Chow Chow', 'Pitbull', 'Rotweiller', 'Boxer',
     'Dobermann', 'Bull Terrier', 'Basset Hound'];
 const pets_nomes = ['Bob', 'Mike', 'Costelinha', 'Jeremias', 'Plínio', 'Touben', 'Teca', 'Mel', 'Luna', 'Marvin', 'Chicho', 'Kiko'];
+const ano_passado_meses = [11, 10, 9, 8, 7, 6];
+const ano_atual_meses = [0, 1, 2, 3];
+const duracao_vakinha = [30, 40, 50, 60, 70, 80, 90, 100, 110, 120];
 
 const lista_cpf = [];
 const lista_petId = [];
@@ -14,6 +17,7 @@ const usuario_com_pet = [];
 
 const usuarios = [];
 const pets = [];
+const anuncios = [];
 
 const NUM_PETS = 100;
 const NUM_USUARIOS = 150;
@@ -27,7 +31,7 @@ const NUM_CLINICAS = 15;
  */
 function geraPet(i) {
     let raca = racas[Math.floor((Math.random() * racas.length) + 1) - 1];
-    return { raca: raca, porte: '', foto: '', nome: pets_nomes[i] ? pets_nomes[i] : '' }
+    return { id: i, raca: raca, porte: '', foto: '', nome: pets_nomes[i] ? pets_nomes[i] : '' }
 }
 
 /**
@@ -43,20 +47,73 @@ function geraUsuario() {
     return { nome: nome_aleatorio, email: email, cpf: cpf.toString() };
 }
 
+function geraAnuncio(i) {
+    let data;
+    if (i < 40) {
+        data = chance.date({ string: true, american: true, year: 2018, month: Math.floor((Math.random() * ano_passado_meses.length) + 1) - 1 });
+    } else {
+        data = chance.date({ string: true, american: true, year: 2019, month: Math.floor((Math.random() * ano_atual_meses.length) + 1) - 1 });
+    }
+    const cpf_usuario = associaAnuncioUsuario();
+    const pet_id = associaAnuncioPet();
+    const status = Math.floor((Math.random() * 2) + 1) == 1;
+    const anuncio = {
+        data: data,
+        cpf_usuario: cpf_usuario,
+        pet_id: pet_id,
+        status: status,
+        titulo: '',
+        descricao: '',
+    }
+
+    return anuncio;
+}
+
+function associaAnuncioPet() {
+    let idx = Math.floor((Math.random() * pets.length - 1) + 1);
+    let pet = pets[idx];
+
+    console.log(pet);
+
+    while (pet.associado) {
+        idx = Math.floor((Math.random() * pets.length - 1) + 1);
+        pet = pets[idx];
+    }
+
+    pet.associado = true;
+
+    return pet.id;
+}
+
+function associaAnuncioUsuario() {
+    let idx = Math.floor((Math.random() * usuarios.length - 1) + 1);
+    let usuario = usuarios[idx];
+
+    while (usuario.associado) {
+        idx = Math.floor((Math.random() * usuarios.length - 1) + 1);
+        usuario = usuarios[idx];
+    }
+
+    usuario.associado = true;
+
+    return usuario.cpf;
+}
+
 function geraOsDados() {
 
     for (let i = 0; i < NUM_USUARIOS; i++) {
-        const usuario = geraUsuario();
-        if (usuario.cpf.length === 11) {
-            usuarios.push(usuario);
-        }
+        usuarios.push(geraUsuario());
     }
-
 
     for (let i = 0; i < NUM_PETS; i++) {
-        const pet = geraPet(i);
-        pets.push(pet);
+        pets.push(geraPet(i));
     }
+
+    for (let i = 0; i < NUM_ANUNCIOS; i++) {
+        anuncios.push(geraAnuncio());
+    }
+
+    console.log(anuncios);
 }
 
 function escreveCsv() {
@@ -80,17 +137,29 @@ function escreveCsv() {
         ]
     }).writeRecords(pets).then(() => console.log('The CSV file was written successfully'));
 
+    // createCsvWriter({
+    //     path: 'csv/vakinhas.csv',
+    //     header: [
+    //         { id: 'data_inicio', title: 'data_inicio' },
+    //         { id: 'data_final', title: 'data_final' },
+    //         { id: 'meta', title: 'meta' },
+    //         { id: 'saldo_atual', title: 'saldo_atual' },
+    //         { id: 'cpf_usuario', title: 'cpf_usuario' },
+    //         { id: 'id_atendimento', title: 'id_atendimento' },
+    //     ]
+    // }).writeRecords(pets).then(() => console.log('The CSV file was written successfully'));
+
     createCsvWriter({
-        path: 'csv/vakinhas.csv',
+        path: 'csv/anuncios.csv',
         header: [
-            { id: 'data_inicio', title: 'data_inicio' },
-            { id: 'data_final', title: 'data_final' },
-            { id: 'meta', title: 'meta' },
-            { id: 'saldo_atual', title: 'saldo_atual' },
+            { id: 'data', title: 'data' },
+            { id: 'titulo', title: 'titulo' },
+            { id: 'descricao', title: 'descricao' },
             { id: 'cpf_usuario', title: 'cpf_usuario' },
-            { id: 'id_atendimento', title: 'id_atendimento' },
+            { id: 'pet_id', title: 'pet_id' },
+            { id: 'status', title: 'status' },
         ]
-    }).writeRecords(pets).then(() => console.log('The CSV file was written successfully'));
+    }).writeRecords(anuncios).then(() => console.log('The CSV file was written successfully'));
 }
 
 geraOsDados();
