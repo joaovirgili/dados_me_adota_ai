@@ -6,8 +6,8 @@ const racas = ['Vira-lata', 'Shih-Tzu', 'Yorkshire', 'Poodle', 'Lhasa Apso', 'Bu
     'Dachshund', 'Pinscher', 'Schnauzer', 'Spitz Alemão', 'Beagle', 'Border Collie', 'Buldogue Inglês', 'Cocker Spaniel', 'Chow Chow', 'Pitbull', 'Rotweiller', 'Boxer',
     'Dobermann', 'Bull Terrier', 'Basset Hound'];
 const pets_nomes = ['Bob', 'Mike', 'Costelinha', 'Jeremias', 'Plínio', 'Touben', 'Teca', 'Mel', 'Luna', 'Marvin', 'Chicho', 'Kiko'];
-const ano_passado_meses = [11, 10, 9, 8, 7, 6];
-const ano_atual_meses = [0, 1, 2, 3];
+const ano_passado_meses = [11, 10, 09, 08, 07, 06];
+const ano_atual_meses = [0, 01, 02, 03];
 const duracao_vakinha = [30, 40, 50, 60, 70, 80, 90, 100, 110, 120];
 
 const lista_cpf = [];
@@ -50,15 +50,16 @@ function geraUsuario() {
 function geraAnuncio(i) {
     let data;
     if (i < 40) {
-        data = chance.date({ string: true, american: true, year: 2018, month: Math.floor((Math.random() * ano_passado_meses.length) + 1) - 1 });
+        data = chance.date({ american: true, year: 2018, month: Math.floor((Math.random() * ano_passado_meses.length) + 1) - 1 });
     } else {
-        data = chance.date({ string: true, american: true, year: 2019, month: Math.floor((Math.random() * ano_atual_meses.length) + 1) - 1 });
+        data = chance.date({ american: true, year: 2019, month: Math.floor((Math.random() * ano_atual_meses.length) + 1) - 1 });
     }
+
     const cpf_usuario = associaAnuncioUsuario();
     const pet_id = associaAnuncioPet();
     const status = Math.floor((Math.random() * 2) + 1) == 1;
     const anuncio = {
-        data: data,
+        data: data.getFullYear() + '/' + (data.getMonth() + 1) + '/' + data.getDate(),
         cpf_usuario: cpf_usuario,
         pet_id: pet_id,
         status: status,
