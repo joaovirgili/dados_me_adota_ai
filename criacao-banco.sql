@@ -14,10 +14,6 @@ create table Pet (
     nome varchar(255),
     raca varchar(255),
     foto varchar(255),
-    pet_id int,
-    usuario_cpf varchar(11),
-    foreign key (pet_id) references Pet(id),
-    foreign key (usuario_cpf) references Usuario(cpf)
 );
 create table Localizacao (
 	id int auto_increment primary key,
